@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ComputeWorks – Computers, parts and custom builds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#070b18; --ink2:#0d1430; --cyan:#4fd8ff; --violet:#8a6bff; --rose:#ff7ab8;
+  --text:#eaf1ff; --muted:#9fb0d3; --glass:rgba(255,255,255,.07); --edge:rgba(255,255,255,.18);
+  --head:'Sora','Segoe UI',system-ui,sans-serif; --body:'Figtree','Segoe UI',system-ui,sans-serif;
+  color-scheme:dark; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:var(--ink);color:var(--text);font:400 1.05rem/1.6 var(--body);overflow-x:hidden}
+#bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%,var(--ink2),var(--ink))}
+.blob{position:absolute;width:46vmax;height:46vmax;border-radius:50%;filter:blur(90px);opacity:.55;left:0;top:0;will-change:transform}
+.b1{background:var(--violet)}.b2{background:var(--cyan);opacity:.4}.b3{background:var(--rose);opacity:.3;width:34vmax;height:34vmax}
+#net{position:fixed;inset:0;z-index:-1;width:100%;height:100%}
+#cur{position:fixed;left:0;top:0;width:38px;height:38px;margin:-19px 0 0 -19px;border:1.5px solid var(--cyan);border-radius:50%;pointer-events:none;z-index:99;transition:width .2s,height .2s,margin .2s,background .2s;mix-blend-mode:screen}
+#cur.big{width:68px;height:68px;margin:-34px 0 0 -34px;background:rgba(79,216,255,.14)}
+#dot{position:fixed;left:0;top:0;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#fff;pointer-events:none;z-index:99}
+@media (hover:none){#cur,#dot{display:none}}
+.glass{background:var(--glass);border:1px solid var(--edge);border-radius:22px;backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 20px 50px rgba(0,0,0,.35)}
+.spot{position:relative;overflow:hidden;transition:transform .15s ease-out;transform-style:preserve-3d}
+.spot::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.2),transparent 60%);opacity:0;transition:opacity .25s}
+.spot:hover::after{opacity:1}
+nav{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:min(1080px,calc(100% - 24px));z-index:50;display:flex;align-items:center;justify-content:space-between;padding:10px 14px 10px 22px;border-radius:999px}
+.logo{font:800 1.25rem var(--head);letter-spacing:-.02em;color:var(--text);text-decoration:none}
+.logo span{color:var(--cyan)}
+nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+nav a.l{color:var(--muted);text-decoration:none;padding:8px 14px;border-radius:999px;font-weight:500;font-size:.95rem;transition:.2s}
+nav a.l:hover{color:#fff;background:rgba(255,255,255,.1)}
+.btn{display:inline-block;font:600 .98rem var(--body);color:#06101f;background:linear-gradient(120deg,var(--cyan),#9ab8ff);border:0;border-radius:999px;padding:12px 24px;text-decoration:none;cursor:pointer;transition:transform .15s,box-shadow .2s}
+.btn:hover{box-shadow:0 8px 30px rgba(79,216,255,.45)}
+.btn.ghost{color:var(--text);background:var(--glass);border:1px solid var(--edge)}
+section{max-width:1080px;margin:0 auto;padding:96px 20px 20px}
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:130px}
+h1{font:800 clamp(2.6rem,7.5vw,5.6rem)/1.02 var(--head);letter-spacing:-.04em;margin:0 0 22px;max-width:14ch}
+h1 em{font-style:normal;background:linear-gradient(100deg,var(--cyan),var(--violet) 55%,var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);max-width:52ch;font-size:1.2rem;margin:0 0 30px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:54px}
+.stat{padding:16px 22px}
+.stat b{display:block;font:800 1.6rem var(--head)}.stat small{color:var(--muted)}
+h2{font:800 clamp(1.9rem,4vw,2.8rem)/1.1 var(--head);letter-spacing:-.03em;margin:0 0 10px}
+.sub{color:var(--muted);margin:0 0 28px;max-width:56ch}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.chip{font:500 .92rem var(--body);color:var(--muted);background:var(--glass);border:1px solid var(--edge);border-radius:999px;padding:8px 18px;cursor:pointer;transition:.2s}
+.chip.on,.chip:hover{color:#06101f;background:var(--cyan);border-color:var(--cyan)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+.card{padding:22px;display:flex;flex-direction:column;gap:8px}
+.card .ico{font-size:2.4rem;line-height:1;margin-bottom:6px}
+.card h3{font:600 1.1rem var(--head);margin:0}
+.card p{margin:0;color:var(--muted);font-size:.95rem}
+.card .foot{margin-top:auto;padding-top:14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.price{font:800 1.15rem var(--head);color:var(--cyan)}
+.tag{font-size:.8rem;color:var(--rose);font-weight:600}
+.card .btn{padding:8px 16px;font-size:.9rem}
+.work{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.work .card{min-height:200px}
+.work .card .big{font:800 2rem var(--head);letter-spacing:-.03em}
+#contact .glass{padding:clamp(24px,5vw,48px);text-align:center}
+#contact h2{margin-inline:auto}
+#contact .sub{margin-inline:auto}
+#contact .row{justify-content:center}
+footer{text-align:center;color:var(--muted);padding:40px 20px 50px;font-size:.9rem}
+@media (max-width:720px){nav ul{display:none}nav{padding:10px 12px 10px 20px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.blob{display:none}}
+</style>
+</head>
+<body>
+<div id="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<canvas id="net"></canvas>
+<div id="cur"></div><div id="dot"></div>
+
+<nav class="glass">
+  <a class="logo" href="#hero">Compute<span>Works</span></a>
+  <ul><li><a class="l" href="#shop">Shop</a></li><li><a class="l" href="#work">Our work</a></li><li><a class="l" href="#contact">Contact</a></li></ul>
+  <a class="btn" href="#shop">Browse computers</a>
+</nav>
+
+<section id="hero">
+  <h1>Computers that <em>keep up</em> with you.</h1>
+  <p class="lead">ComputeWorks sells laptops, desktops and parts, and builds custom PCs for homes, studios and offices. Every machine is tested before it ships.</p>
+  <div class="row"><a class="btn" href="#shop">Shop computers</a><a class="btn ghost" href="#work">See our work</a></div>
+  <div class="stats">
+    <div class="glass stat spot"><b>500+</b><small>Computers sold</small></div>
+    <div class="glass stat spot"><b>120+</b><small>Custom builds</small></div>
+    <div class="glass stat spot"><b>6 months</b><small>Warranty on every item</small></div>
+  </div>
+</section>
+
+<section id="shop">
+  <h2>Computers and parts in stock</h2>
+  <p class="sub">Tap Enquire on any item to message us on WhatsApp with the product already filled in.</p>
+  <div class="chips" id="chips"></div>
+  <div class="grid" id="products"></div>
+</section>
+
+<section id="work">
+  <h2>Work we’ve delivered</h2>
+  <p class="sub">A few of the businesses and people we’ve set up.</p>
+  <div class="grid work">
+    <div class="glass card spot"><div class="big">12 workstations</div><h3>Design studio setup</h3><p>Fast, colour-accurate desktops with a shared storage drive and backup.</p></div>
+    <div class="glass card spot"><div class="big">1 gaming rig</div><h3>Custom liquid-cooled build</h3><p>Chosen parts, tidy cable work and stress testing before handover.</p></div>
+    <div class="glass card spot"><div class="big">30 laptops</div><h3>School lab refresh</h3><p>Refurbished laptops cleaned, upgraded and installed with the school’s software.</p></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="glass spot">
+    <h2>Looking for something specific?</h2>
+    <p class="sub">Tell us your budget and what you’ll use the computer for. We’ll suggest the best option.</p>
+    <div class="row"><a class="btn" id="wa" href="#">Message on WhatsApp</a><a class="btn ghost" href="mailto:computeworks.lk@gmail.com">computeworks.lk@gmail.com</a><a class="btn ghost" href="tel:+94772005398">+94 77 2005 398</a></div>
+  </div>
+</section>
+<footer>© <span id="yr"></span> ComputeWorks. All rights reserved.</footer>
+
+<script>
+var PHONE="94772005398"; // WhatsApp number (country code, no + or spaces)
+var items=[
+ {c:"Laptops",i:"💻",n:"Business Laptop 14\"",d:"Core i5, 16 GB RAM, 512 GB SSD",p:"Rs. 185,000",t:"New"},
+ {c:"Laptops",i:"💻",n:"Refurbished ThinkPad",d:"Core i7, 16 GB RAM, 256 GB SSD",p:"Rs. 95,000",t:"Refurbished"},
+ {c:"Desktops",i:"🖥️",n:"Office Desktop",d:"Core i3, 8 GB RAM, 256 GB SSD, monitor",p:"Rs. 120,000",t:"New"},
+ {c:"Desktops",i:"🎮",n:"Gaming PC",d:"Ryzen 5, 16 GB RAM, RTX graphics",p:"Rs. 320,000",t:"Custom build"},
+ {c:"Parts",i:"🧠",n:"16 GB DDR4 RAM Kit",d:"3200 MHz, 2 × 8 GB",p:"Rs. 14,500",t:"New"},
+ {c:"Parts",i:"💾",n:"1 TB NVMe SSD",d:"Fast storage upgrade",p:"Rs. 23,000",t:"New"},
+ {c:"Accessories",i:"⌨️",n:"Mechanical Keyboard",d:"Backlit, hot-swappable",p:"Rs. 18,500",t:"New"},
+ {c:"Accessories",i:"🖱️",n:"Wireless Mouse",d:"Rechargeable, silent clicks",p:"Rs. 5,500",t:"New"}
+];
+var cats=["All"].concat(items.map(function(x){return x.c}).filter(function(v,i,a){return a.indexOf(v)===i}));
+var cur="All",chips=document.getElementById("chips"),box=document.getElementById("products");
+function render(){
+  chips.innerHTML="";
+  cats.forEach(function(c){var b=document.createElement("button");b.className="chip"+(c===cur?" on":"");b.textContent=c;b.onclick=function(){cur=c;render()};chips.appendChild(b)});
+  box.innerHTML="";
+  items.filter(function(x){return cur==="All"||x.c===cur}).forEach(function(x){
+    var d=document.createElement("div");d.className="glass card spot";
+    var msg=encodeURIComponent("Hi ComputeWorks, I’m interested in: "+x.n);
+    d.innerHTML='<div class="ico">'+x.i+'</div><span class="tag">'+x.t+'</span><h3>'+x.n+'</h3><p>'+x.d+'</p><div class="foot"><span class="price">'+x.p+'</span><a class="btn" href="https://wa.me/'+PHONE+'?text='+msg+'" target="_blank" rel="noopener">Enquire</a></div>';
+    box.appendChild(d);
+  });
+  bind();
+}
+document.getElementById("wa").href="https://wa.me/"+PHONE;
+document.getElementById("yr").textContent=new Date().getFullYear();
+
+/* pointer state */
+var mx=innerWidth/2,my=innerHeight/2,cx=mx,cy=my,rx=mx,ry=my,still=matchMedia("(prefers-reduced-motion:reduce)").matches;
+var cr=document.getElementById("cur"),dt=document.getElementById("dot");
+addEventListener("pointermove",function(e){mx=e.clientX;my=e.clientY;dt.style.transform="translate("+mx+"px,"+my+"px)"});
+
+/* glass cards: tilt + spotlight, grow cursor over interactive things */
+function bind(){
+  document.querySelectorAll(".spot").forEach(function(el){
+    if(el._b)return;el._b=1;
+    el.addEventListener("pointermove",function(e){
+      var r=el.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+      el.style.setProperty("--mx",x+"px");el.style.setProperty("--my",y+"px");
+      if(!still&&e.pointerType==="mouse")el.style.transform="perspective(700px) rotateX("+((y/r.height-.5)*-8)+"deg) rotateY("+((x/r.width-.5)*8)+"deg)";
+    });
+    el.addEventListener("pointerleave",function(){el.style.transform=""});
+  });
+  document.querySelectorAll("a,button").forEach(function(el){
+    if(el._c)return;el._c=1;
+    el.addEventListener("pointerenter",function(){cr.classList.add("big")});
+    el.addEventListener("pointerleave",function(){cr.classList.remove("big")});
+  });
+}
+render();
+
+/* blobs follow the pointer at different speeds */
+var bl=document.querySelectorAll(".blob"),sp=[.04,.025,.015],off=[[-.3,-.3],[.1,-.2],[-.15,.1]],pos=[[mx,my],[mx,my],[mx,my]];
+/* particle network that reacts to the pointer */
+var cv=document.getElementById("net"),g=cv.getContext("2d"),P=[],W,H,dpr=Math.min(devicePixelRatio||1,2);
+function size(){W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;g.setTransform(dpr,0,0,dpr,0,0);
+  var n=Math.min(110,Math.floor(W*H/14000));P=[];for(var i=0;i<n;i++)P.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35})}
+addEventListener("resize",size);size();
+function tick(){
+  rx+=(mx-rx)*.16;ry+=(my-ry)*.16;
+  cr.style.transform="translate("+rx+"px,"+ry+"px)";
+  if(!still){
+    bl.forEach(function(b,i){var p=pos[i];p[0]+=(mx-p[0])*sp[i];p[1]+=(my-p[1])*sp[i];
+      b.style.transform="translate("+(p[0]-b.offsetWidth/2+off[i][0]*innerWidth)+"px,"+(p[1]-b.offsetHeight/2+off[i][1]*innerHeight)+"px)"});
+    g.clearRect(0,0,W,H);
+    for(var i=0;i<P.length;i++){
+      var a=P[i],dx=a.x-mx,dy=a.y-my,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<140){var f=(140-d)/140*1.2;a.x+=dx/d*f;a.y+=dy/d*f}
+      a.x+=a.vx;a.y+=a.vy;
+      if(a.x<0||a.x>W)a.vx*=-1;if(a.y<0||a.y>H)a.vy*=-1;
+      g.fillStyle="rgba(180,220,255,.8)";g.beginPath();g.arc(a.x,a.y,1.6,0,6.283);g.fill();
+      for(var j=i+1;j<P.length;j++){var b=P[j],ex=a.x-b.x,ey=a.y-b.y,e=ex*ex+ey*ey;
+        if(e<12000){g.strokeStyle="rgba(120,190,255,"+(.28*(1-e/12000))+")";g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke()}}
+      if(d<190){g.strokeStyle="rgba(79,216,255,"+(.5*(1-d/190))+")";g.beginPath();g.moveTo(a.x,a.y);g.lineTo(mx,my);g.stroke()}
+    }
+  }
+  requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body>
+</html>
